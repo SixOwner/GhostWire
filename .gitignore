@@ -1,0 +1,17 @@
+# Secrets & Private Keys
+mad2019.pem
+*.pem
+*.key
+*.pk8
+secrets/
+
+# Build artifacts
+build/
+.gradle/
+target/
+*.apk
+*.aab
+local.properties
+.idea/
+.DS_Store
+*.log

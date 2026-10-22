@@ -1,0 +1,31 @@
+[package]
+name = "ghostwire-core"
+version = "2.4.0"
+edition = "2021"
+authors = ["SixOwner"]
+description = "GhostWire High-Performance Censorship-Circumvention Core Engine"
+license = "Proprietary"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "ghostwire_core"
+
+[dependencies]
+jni = { version = "0.21.1", default-features = false }
+tokio = { version = "1.37", default-features = false, features = ["rt-multi-thread", "sync", "time", "net", "io-util", "macros"] }
+serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }
+serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+bytes = { version = "1.6", default-features = false }
+rand = { version = "0.8", default-features = false, features = ["std", "std_rng"] }
+regex = { version = "1.10", default-features = false, features = ["std", "perf"] }
+lazy_static = "1.4"
+url = { version = "2.5", default-features = false }
+base64 = { version = "0.22", default-features = false, features = ["alloc"] }
+hex = { version = "0.4", default-features = false, features = ["alloc"] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

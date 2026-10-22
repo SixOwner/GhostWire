@@ -1,0 +1,129 @@
+<resources>
+    <!-- Core Identity -->
+    <string name="app_name">GhostWire</string>
+    <string name="developer_name">SixOwner</string>
+    <string name="community_channel_name">ایران آزاد</string>
+    <string name="community_channel_url">https://t.me/irazadnet</string>
+    <string name="app_version_display">v2.4.0 (Build 2027.10)</string>
+    <string name="build_integrity_verified">Integrity Verified (SHA-256 Validated)</string>
+
+    <!-- Navigation Tabs -->
+    <string name="tab_nexus">Nexus</string>
+    <string name="tab_radar">Radar</string>
+    <string name="tab_tactical">Tactical</string>
+    <string name="tab_engine">Engine</string>
+
+    <!-- Nexus Dashboard -->
+    <string name="status_disconnected">DISCONNECTED</string>
+    <string name="status_connecting">ESTABLISHING TUNNEL...</string>
+    <string name="status_connected">PROTECTED &amp; ROUTED</string>
+    <string name="status_reconnecting">AUTO-FAILOVER HEALING...</string>
+    <string name="tap_to_connect">Tap to Secure Link</string>
+    <string name="tap_to_disconnect">Tap to Terminate Link</string>
+    <string name="telemetry_upload">UPLINK</string>
+    <string name="telemetry_download">DOWNLINK</string>
+    <string name="telemetry_latency">RTT LATENCY</string>
+    <string name="telemetry_packet_loss">PACKET LOSS</string>
+    <string name="telemetry_active_protocol">ACTIVE TRANSPORT</string>
+    <string name="telemetry_session_time">SESSION DURATION</string>
+    <string name="auto_diagnosis_optimal">System Optimal</string>
+    <string name="auto_diagnosis_blackout">Blackout Bypass Engaged</string>
+    <string name="auto_diagnosis_dpi">DPI Fragmentation Active</string>
+    <string name="selected_node_label">Selected Core Node</string>
+
+    <!-- Radar Scanner -->
+    <string name="radar_title">Domestic DNS &amp; SNI Radar</string>
+    <string name="radar_subtitle">Real-Time Probe &amp; Anti-Poisoning Matrix</string>
+    <string name="radar_scan_all">Scan All Resolvers</string>
+    <string name="radar_scanning">Probing Matrix...</string>
+    <string name="radar_healthy_count">%1$d / %2$d Nodes Operational</string>
+    <string name="radar_poisoned">Poisoned / Quarantined</string>
+    <string name="radar_verified">Anti-Poison Verified</string>
+    <string name="radar_edns_buffer">EDNS0 Buffer: %1$d bytes</string>
+    <string name="radar_filter_all">All ISPs</string>
+    <string name="radar_filter_mci">MCI</string>
+    <string name="radar_filter_irancell">Irancell</string>
+    <string name="radar_filter_rightel">Rightel</string>
+    <string name="radar_filter_fixed">Fixed Lines</string>
+
+    <!-- Tactical Profiles -->
+    <string name="tactical_title">Profiles &amp; Transport Hub</string>
+    <string name="tactical_test_all">Test All Latencies</string>
+    <string name="tactical_import_profile">Import Config / SlipNet</string>
+    <string name="tactical_restore_defaults">Restore Default Configuration</string>
+    <string name="tactical_restore_confirm">Are you sure you want to revert all network and transport parameters to factory defaults?</string>
+    <string name="tactical_restore_action">Restore Defaults</string>
+    <string name="tactical_cancel">Cancel</string>
+    <string name="tactical_builtin_tag">BUILT-IN IMMUTABLE</string>
+    <string name="tactical_custom_tag">USER CUSTOM</string>
+    <string name="tactical_edit_transport">Edit Transport Parameters</string>
+    <string name="tactical_resolver_override">Custom Resolver IP</string>
+    <string name="tactical_mtu_override">Custom MTU</string>
+    <string name="tactical_port_override">Custom Port</string>
+    <string name="tactical_noise_toggle">Protocol Noise Injection</string>
+    <string name="tactical_save">Save Changes</string>
+
+    <!-- Importer Dialog -->
+    <string name="import_dialog_title">Import Profile or SlipNet URI</string>
+    <string name="import_dialog_hint">Paste ghostwire://, vless://, dnstt://, or SlipNet JSON</string>
+    <string name="import_action">Import &amp; Activate</string>
+    <string name="import_success">Configuration profile parsed successfully</string>
+    <string name="import_error">Invalid or unsupported profile format</string>
+
+    <!-- Engine Settings -->
+    <string name="engine_title">Engine &amp; Core Settings</string>
+    <string name="engine_general">General Preferences</string>
+    <string name="engine_language">Language / زبان</string>
+    <string name="engine_lang_en">English (LTR)</string>
+    <string name="engine_lang_fa">فارسی (RTL)</string>
+    <string name="engine_theme">Interface Appearance</string>
+    <string name="engine_theme_dark">Dark Shield (Cyber Minimalist)</string>
+    <string name="engine_theme_light">Light Cyber (High Contrast)</string>
+
+    <!-- Engine Network Optimization -->
+    <string name="engine_network_opt">Transport &amp; Packet Engine</string>
+    <string name="engine_auto_mtu">Automated Path MTU Discovery (PMTUD)</string>
+    <string name="engine_auto_mtu_desc">Probes black-hole boundaries and locks dynamic optimal MTU</string>
+    <string name="engine_manual_mtu">Manual MTU Size</string>
+    <string name="engine_desync">TLS ClientHello Fragmentation</string>
+    <string name="engine_desync_desc">Splits TLS handshake packets to disrupt Deep Packet Inspection</string>
+    <string name="engine_resolver_hopping">Dynamic Resolver Hopping</string>
+    <string name="engine_resolver_hopping_desc">Rotates through top healthy domestic resolvers during DNS tunneling</string>
+
+    <!-- Engine Survival Mode -->
+    <string name="engine_survival">L7 Survival Mode &amp; Firewall</string>
+    <string name="engine_per_app_routing">Per-App Routing (Split Tunneling)</string>
+    <string name="engine_per_app_desc">Whitelist critical communication apps and bypass banking tools</string>
+    <string name="engine_configure_routing">Configure App Routing</string>
+    <string name="engine_bg_stripper">Background Data Stripper</string>
+    <string name="engine_bg_stripper_desc">Suppresses OS telemetry and background cloud syncs during severe blackout</string>
+    <string name="engine_stream_compression">Zstandard (zstd) Compression</string>
+    <string name="engine_stream_compression_desc">Compresses compatible DNS and tunnel payloads</string>
+
+    <!-- App Routing / Split Tunneling -->
+    <string name="split_tunneling_title">Dynamic Split Tunneling</string>
+    <string name="split_tunneling_subtitle">Per-App Routing &amp; Blackout Traffic Control</string>
+    <string name="split_mode_all">Tunnel All Applications</string>
+    <string name="split_mode_all_desc">Route all device network traffic through GhostWire</string>
+    <string name="split_mode_whitelist">Proxy Only Selected Apps</string>
+    <string name="split_mode_whitelist_desc">Only route traffic for chosen apps (e.g. Telegram, WhatsApp)</string>
+    <string name="split_mode_blacklist">Bypass Selected Apps</string>
+    <string name="split_mode_blacklist_desc">Bypass GhostWire for chosen apps (e.g. local banking, Snapp)</string>
+    <string name="split_search_hint">Search installed apps...</string>
+    <string name="split_selected_count">%1$d apps selected</string>
+    <string name="split_select_all">Select All</string>
+    <string name="split_clear_all">Clear All</string>
+    <string name="split_system_apps">System Applications</string>
+    <string name="split_user_apps">User Applications</string>
+
+    <!-- About & Developer Hub -->
+    <string name="about_title">Engineering &amp; Community Hub</string>
+    <string name="about_developer_title">Architect &amp; Lead Systems Engineer</string>
+    <string name="about_developer_credit">Developed by SixOwner</string>
+    <string name="about_community_title">Official Community Channel</string>
+    <string name="about_community_desc">Join the resistance on Telegram for blackout nodes &amp; critical updates</string>
+    <string name="about_community_button">Join ایران آزاد</string>
+    <string name="about_build_status">Binary Release Status</string>
+    <string name="about_build_verified">Official Verified Release</string>
+    <string name="about_disclaimer">GhostWire is an open censorship-circumvention client engineered to protect unrestricted communication during national blackouts.</string>
+</resources>

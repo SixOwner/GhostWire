@@ -1,0 +1,145 @@
+[
+  {
+    "id": "mci_primary",
+    "name": "MCI (Hamrah Aval) Core 1",
+    "isp": "MCI",
+    "ip": "10.201.34.14",
+    "port": 53,
+    "asn": "AS197207",
+    "edns_buffer_supported": 4096,
+    "anti_poison_verified": true,
+    "priority": 1
+  },
+  {
+    "id": "mci_secondary",
+    "name": "MCI (Hamrah Aval) Core 2",
+    "isp": "MCI",
+    "ip": "10.201.34.15",
+    "port": 53,
+    "asn": "AS197207",
+    "edns_buffer_supported": 4096,
+    "anti_poison_verified": true,
+    "priority": 2
+  },
+  {
+    "id": "irancell_primary",
+    "name": "MTN Irancell Node Alpha",
+    "isp": "Irancell",
+    "ip": "10.202.10.202",
+    "port": 53,
+    "asn": "AS44244",
+    "edns_buffer_supported": 4096,
+    "anti_poison_verified": true,
+    "priority": 1
+  },
+  {
+    "id": "irancell_secondary",
+    "name": "MTN Irancell Node Beta",
+    "isp": "Irancell",
+    "ip": "10.202.10.102",
+    "port": 53,
+    "asn": "AS44244",
+    "edns_buffer_supported": 4096,
+    "anti_poison_verified": true,
+    "priority": 2
+  },
+  {
+    "id": "rightel_primary",
+    "name": "Rightel 4G Edge 1",
+    "isp": "Rightel",
+    "ip": "10.198.0.1",
+    "port": 53,
+    "asn": "AS57218",
+    "edns_buffer_supported": 2048,
+    "anti_poison_verified": true,
+    "priority": 1
+  },
+  {
+    "id": "shatel_primary",
+    "name": "Shatel FTTx FastDNS",
+    "isp": "Shatel",
+    "ip": "85.15.1.14",
+    "port": 53,
+    "asn": "AS31549",
+    "edns_buffer_supported": 4096,
+    "anti_poison_verified": true,
+    "priority": 1
+  },
+  {
+    "id": "shatel_secondary",
+    "name": "Shatel Backup DNS",
+    "isp": "Shatel",
+    "ip": "85.15.1.15",
+    "port": 53,
+    "asn": "AS31549",
+    "edns_buffer_supported": 4096,
+    "anti_poison_verified": true,
+    "priority": 2
+  },
+  {
+    "id": "mokhaberat_primary",
+    "name": "TCI Mokhaberat National 1",
+    "isp": "Mokhaberat",
+    "ip": "217.218.127.127",
+    "port": 53,
+    "asn": "AS58224",
+    "edns_buffer_supported": 1400,
+    "anti_poison_verified": true,
+    "priority": 1
+  },
+  {
+    "id": "mokhaberat_secondary",
+    "name": "TCI Mokhaberat National 2",
+    "isp": "Mokhaberat",
+    "ip": "217.218.155.155",
+    "port": 53,
+    "asn": "AS58224",
+    "edns_buffer_supported": 1400,
+    "anti_poison_verified": true,
+    "priority": 2
+  },
+  {
+    "id": "asiatech_primary",
+    "name": "Asiatech Ultra Fiber",
+    "isp": "Asiatech",
+    "ip": "194.225.70.10",
+    "port": 53,
+    "asn": "AS43754",
+    "edns_buffer_supported": 4096,
+    "anti_poison_verified": true,
+    "priority": 1
+  },
+  {
+    "id": "parsonline_primary",
+    "name": "ParsOnline FastPath",
+    "isp": "ParsOnline",
+    "ip": "91.99.101.12",
+    "port": 53,
+    "asn": "AS16322",
+    "edns_buffer_supported": 4096,
+    "anti_poison_verified": true,
+    "priority": 1
+  },
+  {
+    "id": "shecan_domestic",
+    "name": "Shecan Domestic Clearing",
+    "isp": "Shecan",
+    "ip": "178.22.122.100",
+    "port": 53,
+    "asn": "AS48159",
+    "edns_buffer_supported": 4096,
+    "anti_poison_verified": true,
+    "priority": 1
+  },
+  {
+    "id": "electro_domestic",
+    "name": "Electro Anti-Sanction",
+    "isp": "Electro",
+    "ip": "78.157.42.100",
+    "port": 53,
+    "asn": "AS58224",
+    "edns_buffer_supported": 4096,
+    "anti_poison_verified": true,
+    "priority": 1
+  }
+]

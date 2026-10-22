@@ -1,0 +1,129 @@
+<resources>
+    <!-- Core Identity -->
+    <string name="app_name">GhostWire</string>
+    <string name="developer_name">SixOwner</string>
+    <string name="community_channel_name">ایران آزاد</string>
+    <string name="community_channel_url">https://t.me/irazadnet</string>
+    <string name="app_version_display">نسخه ۲.۴.۰ (ساخت ۲۰۲۷.۱۰)</string>
+    <string name="build_integrity_verified">اصالت باینری تأیید شد (SHA-256 معتبر)</string>
+
+    <!-- Navigation Tabs -->
+    <string name="tab_nexus">نکسوس</string>
+    <string name="tab_radar">رادار</string>
+    <string name="tab_tactical">تاکتیکال</string>
+    <string name="tab_engine">تنظیمات</string>
+
+    <!-- Nexus Dashboard -->
+    <string name="status_disconnected">اتصال قطع است</string>
+    <string name="status_connecting">در حال برقراری تونل امن...</string>
+    <string name="status_connected">متصل و رمزنگاری‌شده</string>
+    <string name="status_reconnecting">تغییر مسیر خودکار در بلک‌اوت...</string>
+    <string name="tap_to_connect">لمس کنید برای برقراری ارتباط</string>
+    <string name="tap_to_disconnect">لمس کنید برای قطع اتصال</string>
+    <string name="telemetry_upload">ارسال (آپلود)</string>
+    <string name="telemetry_download">دریافت (دانلود)</string>
+    <string name="telemetry_latency">پینگ واقعی (RTT)</string>
+    <string name="telemetry_packet_loss">از دست رفتن بسته</string>
+    <string name="telemetry_active_protocol">پروتکل فعال</string>
+    <string name="telemetry_session_time">مدت اتصال</string>
+    <string name="auto_diagnosis_optimal">سیستم در شرایط بهینه</string>
+    <string name="auto_diagnosis_blackout">حالت ضدقطعی اینترنت فعال</string>
+    <string name="auto_diagnosis_dpi">تکه‌تکه‌سازی پکت‌های فیلترینگ فعال</string>
+    <string name="selected_node_label">سرور فعال انتخاب‌شده</string>
+
+    <!-- Radar Scanner -->
+    <string name="radar_title">رادار ریزالورهای داخلی و SNI</string>
+    <string name="radar_subtitle">پایش زنده و سنجش مسمومیت DNS</string>
+    <string name="radar_scan_all">اسکن تمام سرورها</string>
+    <string name="radar_scanning">در حال سنجش شبکه...</string>
+    <string name="radar_healthy_count">%1$d از %2$d سرور سالم و عملیاتی</string>
+    <string name="radar_poisoned">مسموم / قرنطینه‌شده</string>
+    <string name="radar_verified">تأیید سلامت ضدمسمومیت</string>
+    <string name="radar_edns_buffer">حجم بافر EDNS0: %1$d بایت</string>
+    <string name="radar_filter_all">همه اپراتورها</string>
+    <string name="radar_filter_mci">همراه اول</string>
+    <string name="radar_filter_irancell">ایرانسل</string>
+    <string name="radar_filter_rightel">رایتل</string>
+    <string name="radar_filter_fixed">اینترنت ثابت</string>
+
+    <!-- Tactical Profiles -->
+    <string name="tactical_title">پروفایل‌ها و پروتکل‌ها</string>
+    <string name="tactical_test_all">تست تاخیر تمام سرورها</string>
+    <string name="tactical_import_profile">دریافت کانفیگ / SlipNet</string>
+    <string name="tactical_restore_defaults">بازنشانی به تنظیمات کارخانه</string>
+    <string name="tactical_restore_confirm">آیا از بازگردانی تمامی پارامترهای شبکه به تنظیمات پیش‌فرض کارخانه اطمینان دارید؟</string>
+    <string name="tactical_restore_action">بازنشانی</string>
+    <string name="tactical_cancel">انصراف</string>
+    <string name="tactical_builtin_tag">پیش‌فرض امنیتی</string>
+    <string name="tactical_custom_tag">شخصی‌سازی‌شده</string>
+    <string name="tactical_edit_transport">ویرایش پارامترهای لایه انتقال</string>
+    <string name="tactical_resolver_override">آدرس ریزالور دلخواه</string>
+    <string name="tactical_mtu_override">مقدار MTU دلخواه</string>
+    <string name="tactical_port_override">پورت دلخواه</string>
+    <string name="tactical_noise_toggle">تزریق نویز به پروتکل</string>
+    <string name="tactical_save">ذخیره تغییرات</string>
+
+    <!-- Importer Dialog -->
+    <string name="import_dialog_title">وارد کردن کانفیگ یا SlipNet</string>
+    <string name="import_dialog_hint">پیوند ghostwire://، vless://، dnstt:// یا JSON اسلیپ‌نت را وارد کنید</string>
+    <string name="import_action">افزودن و فعال‌سازی</string>
+    <string name="import_success">پروفایل با موفقیت افزوده شد</string>
+    <string name="import_error">قالب پیکربندی نامعتبر است</string>
+
+    <!-- Engine Settings -->
+    <string name="engine_title">تنظیمات هسته شبکه</string>
+    <string name="engine_general">تنظیمات عمومی</string>
+    <string name="engine_language">زبان برنامه (Language)</string>
+    <string name="engine_lang_en">English (انگلیسی)</string>
+    <string name="engine_lang_fa">فارسی (Persian)</string>
+    <string name="engine_theme">پوسته ظاهری</string>
+    <string name="engine_theme_dark">سایبر تیره (Dark Shield)</string>
+    <string name="engine_theme_light">سایبر روشن (Light Cyber)</string>
+
+    <!-- Engine Network Optimization -->
+    <string name="engine_network_opt">بهینه‌سازی لایه بسته و MTU</string>
+    <string name="engine_auto_mtu">کشف خودکار MTU مسیر (PMTUD)</string>
+    <string name="engine_auto_mtu_desc">شناسایی سیاه‌چاله‌های شبکه و تنظیم دقیق بهترین سایز پکت</string>
+    <string name="engine_manual_mtu">اندازه دستی MTU</string>
+    <string name="engine_desync">تکه‌تکه‌سازی ClientHello (فریب DPI)</string>
+    <string name="engine_desync_desc">شکستن هندشیک TLS جهت فریب سیستم‌های فیلترینگ عمیق</string>
+    <string name="engine_resolver_hopping">پرش هوشمند بین ریزالورها</string>
+    <string name="engine_resolver_hopping_desc">چرخش دوره‌ای بین سالم‌ترین ریزالورهای داخلی هنگام تونل DNS</string>
+
+    <!-- Engine Survival Mode -->
+    <string name="engine_survival">حالت اضطراری لایه ۷ (فایروال بقا)</string>
+    <string name="engine_per_app_routing">مسیریابی تفکیک‌شده (Split Tunneling)</string>
+    <string name="engine_per_app_desc">هدایت ترافیک برنامه‌های مشخص و دور زدن فیلترشکن برای اپ‌های داخلی</string>
+    <string name="engine_configure_routing">تنظیمات مسیریابی اپلیکیشن‌ها</string>
+    <string name="engine_bg_stripper">مسدودساز دیتای پس‌زمینه</string>
+    <string name="engine_bg_stripper_desc">جلوگیری از آپدیت‌ها و تله‌متری سیستم‌عامل در زمان اختلال شدید</string>
+    <string name="engine_stream_compression">فشرده‌سازی با الگوریتم Zstandard</string>
+    <string name="engine_stream_compression_desc">کاهش مصرف داده و افزایش سرعت در تونل‌های کم‌سرعت</string>
+
+    <!-- App Routing / Split Tunneling -->
+    <string name="split_tunneling_title">مسیریابی هوشمند برنامه‌ها</string>
+    <string name="split_tunneling_subtitle">کنترل ترافیک هر برنامه و تفکیک فیلترشکن</string>
+    <string name="split_mode_all">تمام برنامه‌ها (تونل کامل دستگاه)</string>
+    <string name="split_mode_all_desc">تمامی ترافیک اینترنت دستگاه از داخل تونل عبور می‌کند</string>
+    <string name="split_mode_whitelist">فقط برنامه‌های انتخابی (پروکسی اختصاصی)</string>
+    <string name="split_mode_whitelist_desc">تنها ترافیک برنامه‌های مشخص‌شده از فیلترشکن رد می‌شود</string>
+    <string name="split_mode_blacklist">عبور دادن برنامه‌های انتخابی (دور زدن فیلترشکن)</string>
+    <string name="split_mode_blacklist_desc">برنامه‌های انتخابی (مانند اپ‌های بانکی) مستقیماً وصل می‌شوند</string>
+    <string name="split_search_hint">جستجوی برنامه‌ها...</string>
+    <string name="split_selected_count">%1$d برنامه انتخاب شده</string>
+    <string name="split_select_all">انتخاب همه</string>
+    <string name="split_clear_all">پاک کردن</string>
+    <string name="split_system_apps">برنامه‌های سیستمی</string>
+    <string name="split_user_apps">برنامه‌های کاربردی</string>
+
+    <!-- About & Developer Hub -->
+    <string name="about_title">مرکز توسعه و جامعه کاربری</string>
+    <string name="about_developer_title">توسعه‌دهنده و معمار ارشد سیستم</string>
+    <string name="about_developer_credit">توسعه یافته توسط SixOwner</string>
+    <string name="about_community_title">کانال رسمی ایران آزاد</string>
+    <string name="about_community_desc">عضویت در کانال تلگرام برای دریافت جدیدترین کانفیگ‌ها و راه‌های عبور از فیلترینگ</string>
+    <string name="about_community_button">ورود به کانال ایران آزاد</string>
+    <string name="about_build_status">وضعیت ساخت نرم‌افزار</string>
+    <string name="about_build_verified">نسخه رسمی و تایید شده</string>
+    <string name="about_disclaimer">برنامه GhostWire برای دور زدن سانسور و پایداری ارتباطات در شرایط قطع اینترنت طراحی شده است.</string>
+</resources>
