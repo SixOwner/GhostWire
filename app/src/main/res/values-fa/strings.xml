@@ -34,17 +34,27 @@
     <!-- Radar Scanner -->
     <string name="radar_title">رادار ریزالورهای داخلی و SNI</string>
     <string name="radar_subtitle">پایش زنده و سنجش مسمومیت DNS</string>
-    <string name="radar_scan_all">اسکن تمام سرورها</string>
+    <string name="radar_sampa_asa_count">بیش از ۳۱,۰۰۰ ریزالور تاییدشده داخلی (SAMPA-ASA V8)</string>
+    <string name="radar_search_hint">جستجو در ۳۱,۰۰۰+ آی‌پی، ساب‌نت یا اپراتور...</string>
+    <string name="radar_update_db">بروزرسانی مخزن</string>
+    <string name="radar_updating_db">در حال دریافت...</string>
+    <string name="radar_db_updated">مخزن ریزالورها با موفقیت بروزرسانی شد (%1$d سرور)</string>
+    <string name="radar_db_update_failed">خطا در دریافت لیست ریزالورها از گیت‌هاب</string>
+    <string name="radar_scan_all">اسکن ماتریس</string>
     <string name="radar_scanning">در حال سنجش شبکه...</string>
     <string name="radar_healthy_count">%1$d از %2$d سرور سالم و عملیاتی</string>
     <string name="radar_poisoned">مسموم / قرنطینه‌شده</string>
     <string name="radar_verified">تأیید سلامت ضدمسمومیت</string>
     <string name="radar_edns_buffer">حجم بافر EDNS0: %1$d بایت</string>
-    <string name="radar_filter_all">همه اپراتورها</string>
+    <string name="radar_filter_all">همه</string>
+    <string name="radar_filter_clean_ip">آی‌پی تمیز</string>
     <string name="radar_filter_mci">همراه اول</string>
     <string name="radar_filter_irancell">ایرانسل</string>
     <string name="radar_filter_rightel">رایتل</string>
     <string name="radar_filter_fixed">اینترنت ثابت</string>
+    <string name="radar_auto_apply_best">اعمال بهترین نود</string>
+    <string name="radar_use_node">انتخاب نود</string>
+    <string name="radar_applied_node">نود %1$s روی کانفیگ فعال تنظیم شد</string>
 
     <!-- Tactical Profiles -->
     <string name="tactical_title">پروفایل‌ها و پروتکل‌ها</string>

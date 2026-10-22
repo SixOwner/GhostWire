@@ -91,6 +91,9 @@ class MainActivity : ComponentActivity() {
             val scanProgress by radarRepo.scanProgress.collectAsState()
             val scanStage by radarRepo.scanStage.collectAsState()
             val activeFilter by radarRepo.activeFilter.collectAsState()
+            val searchQuery by radarRepo.searchQuery.collectAsState()
+            val isUpdatingDb by radarRepo.isUpdatingDb.collectAsState()
+            val totalResolversCount by radarRepo.totalResolversCount.collectAsState()
             val telemetry by GhostWireVpnController.telemetry.collectAsState()
 
             var selectedTab by remember { mutableStateOf(NavigationTab.NEXUS) }
@@ -159,15 +162,37 @@ class MainActivity : ComponentActivity() {
                                     NavigationTab.RADAR -> {
                                         RadarScreen(
                                             resolvers = resolvers,
+                                            totalCount = totalResolversCount,
                                             isScanning = isScanningRadar,
+                                            isUpdatingDb = isUpdatingDb,
                                             scanProgress = scanProgress,
                                             scanStage = scanStage,
                                             activeFilter = activeFilter,
+                                            searchQuery = searchQuery,
                                             activeProfile = activeProfile,
                                             onFilterChange = { radarRepo.setFilter(it) },
+                                            onSearchQueryChange = { radarRepo.setSearchQuery(it) },
                                             onScanClick = {
                                                 lifecycleScope.launch {
                                                     radarRepo.scanAllResolvers()
+                                                }
+                                            },
+                                            onUpdateDbClick = {
+                                                lifecycleScope.launch {
+                                                    val result = radarRepo.updateResolversFromGithub()
+                                                    if (result.isSuccess) {
+                                                        Toast.makeText(
+                                                            this@MainActivity,
+                                                            getString(R.string.radar_db_updated, result.getOrNull() ?: 31247),
+                                                            Toast.LENGTH_LONG
+                                                        ).show()
+                                                    } else {
+                                                        Toast.makeText(
+                                                            this@MainActivity,
+                                                            getString(R.string.radar_db_update_failed),
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
                                                 }
                                             },
                                             onApplyNodeToProfile = { node ->
@@ -177,6 +202,11 @@ class MainActivity : ComponentActivity() {
                                                     } else {
                                                         profileRepo.applyIpOrDnsToProfile(activeProfile.id, null, node.ip)
                                                     }
+                                                    Toast.makeText(
+                                                        this@MainActivity,
+                                                        getString(R.string.radar_applied_node, node.ip),
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
                                                 }
                                             },
                                             onAutoApplyBestNode = {
@@ -187,6 +217,11 @@ class MainActivity : ComponentActivity() {
                                                     } else {
                                                         profileRepo.applyIpOrDnsToProfile(activeProfile.id, null, best.ip)
                                                     }
+                                                    Toast.makeText(
+                                                        this@MainActivity,
+                                                        getString(R.string.radar_applied_node, best.ip),
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
                                                 }
                                             }
                                         )

@@ -34,17 +34,27 @@
     <!-- Radar Scanner -->
     <string name="radar_title">Domestic DNS &amp; SNI Radar</string>
     <string name="radar_subtitle">Real-Time Probe &amp; Anti-Poisoning Matrix</string>
-    <string name="radar_scan_all">Scan All Resolvers</string>
+    <string name="radar_sampa_asa_count">31,247+ Verified Resolvers (SAMPA-ASA V8)</string>
+    <string name="radar_search_hint">Search 31K+ IPs, Subnets or ISPs...</string>
+    <string name="radar_update_db">Update DB</string>
+    <string name="radar_updating_db">Updating...</string>
+    <string name="radar_db_updated">Successfully updated %1$d resolvers from GitHub</string>
+    <string name="radar_db_update_failed">Failed to update resolvers from GitHub</string>
+    <string name="radar_scan_all">Scan Matrix</string>
     <string name="radar_scanning">Probing Matrix...</string>
     <string name="radar_healthy_count">%1$d / %2$d Nodes Operational</string>
     <string name="radar_poisoned">Poisoned / Quarantined</string>
     <string name="radar_verified">Anti-Poison Verified</string>
     <string name="radar_edns_buffer">EDNS0 Buffer: %1$d bytes</string>
-    <string name="radar_filter_all">All ISPs</string>
+    <string name="radar_filter_all">All</string>
+    <string name="radar_filter_clean_ip">Clean IP</string>
     <string name="radar_filter_mci">MCI</string>
     <string name="radar_filter_irancell">Irancell</string>
     <string name="radar_filter_rightel">Rightel</string>
     <string name="radar_filter_fixed">Fixed Lines</string>
+    <string name="radar_auto_apply_best">Auto-Apply Best</string>
+    <string name="radar_use_node">Use Node</string>
+    <string name="radar_applied_node">Applied %1$s to active profile</string>
 
     <!-- Tactical Profiles -->
     <string name="tactical_title">Profiles &amp; Transport Hub</string>
