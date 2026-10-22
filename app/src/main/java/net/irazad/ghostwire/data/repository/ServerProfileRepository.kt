@@ -3,6 +3,7 @@ package net.irazad.ghostwire.data.repository
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
+import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +14,10 @@ import net.irazad.ghostwire.data.models.ServerProfile
 import net.irazad.ghostwire.vpn.NativeBridge
 import org.json.JSONArray
 import org.json.JSONObject
+import java.net.InetSocketAddress
+import java.net.Socket
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 class ServerProfileRepository(context: Context) {
 
@@ -58,14 +63,25 @@ class ServerProfileRepository(context: Context) {
         prefs.edit().putString("custom_profiles_json", array.toString()).apply()
     }
 
-    /**
-     * One-Tap Factory Reset:
-     * Wipes any modified parameters on built-in nodes and restores factory defaults.
-     */
     fun restoreFactoryDefaults() {
         val customOnly = _profiles.value.filter { !it.isBuiltin }
         val factoryProfiles = BuiltinConfigVault.getFactoryDefaultProfiles()
         _profiles.value = factoryProfiles + customOnly
+    }
+
+    fun addProfile(profile: ServerProfile) {
+        val current = _profiles.value.toMutableList()
+        current.removeAll { it.id == profile.id }
+        current.add(profile)
+        _profiles.value = current
+        saveCustomProfiles()
+    }
+
+    fun deleteProfile(profileId: String) {
+        val current = _profiles.value.toMutableList()
+        current.removeAll { it.id == profileId && !it.isBuiltin }
+        _profiles.value = current
+        saveCustomProfiles()
     }
 
     fun updateTransportParameters(
@@ -91,113 +107,293 @@ class ServerProfileRepository(context: Context) {
         saveCustomProfiles()
     }
 
+    fun applyIpOrDnsToProfile(profileId: String, newIp: String?, newDns: String?) {
+        val updated = _profiles.value.map { profile ->
+            if (profile.id == profileId) {
+                profile.copy(
+                    serverAddress = newIp?.takeIf { it.isNotBlank() } ?: profile.serverAddress,
+                    resolverIp = newDns?.takeIf { it.isNotBlank() } ?: profile.resolverIp
+                )
+            } else {
+                profile
+            }
+        }
+        _profiles.value = updated
+        saveCustomProfiles()
+    }
+
     /**
-     * Imports configuration from URI (ghostwire://, vless://, dnstt://) or SlipNet JSON.
+     * Imports configuration from URI (vless://, vmess://, trojan://, ss://, dnstt://, ghostwire://)
      */
     suspend fun importProfile(input: String): Result<ServerProfile> = withContext(Dispatchers.IO) {
         try {
-            if (NativeBridge.isLoaded()) {
-                val nativeParsedJson = NativeBridge.parseConfigurationUri(input.trim())
-                val json = JSONObject(nativeParsedJson)
-                if (json.has("error")) {
-                    return@withContext Result.failure(Exception(json.getString("error")))
-                }
-                val profile = ServerProfile.fromJson(json)
-                addProfile(profile)
-                return@withContext Result.success(profile)
+            val trimmed = input.trim()
+
+            // WireGuard text format (.conf)
+            if (trimmed.contains("[Interface]", ignoreCase = true) && trimmed.contains("[Peer]", ignoreCase = true)) {
+                return@withContext importWireguardConfig(trimmed, "WireGuard Imported")
             }
 
-            // High-resilience fallback parser
-            val fallbackProfile = parseFallbackInput(input.trim())
-            addProfile(fallbackProfile)
-            Result.success(fallbackProfile)
+            // Universal Multi-Protocol Parser
+            val profile = when {
+                trimmed.startsWith("ghostwire://", true) -> parseGhostwireUri(trimmed)
+                trimmed.startsWith("vless://", true) -> parseVlessUri(trimmed)
+                trimmed.startsWith("vmess://", true) -> parseVmessUri(trimmed)
+                trimmed.startsWith("trojan://", true) -> parseTrojanUri(trimmed)
+                trimmed.startsWith("ss://", true) -> parseShadowsocksUri(trimmed)
+                trimmed.startsWith("dnstt://", true) -> parseDnsttUri(trimmed)
+                else -> {
+                    if (NativeBridge.isLoaded()) {
+                        val nativeParsedJson = NativeBridge.parseConfigurationUri(trimmed)
+                        val json = JSONObject(nativeParsedJson)
+                        if (!json.has("error")) {
+                            ServerProfile.fromJson(json)
+                        } else {
+                            throw IllegalArgumentException(json.getString("error"))
+                        }
+                    } else {
+                        throw IllegalArgumentException("Unsupported configuration format")
+                    }
+                }
+            }
+
+            addProfile(profile)
+            Result.success(profile)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    private fun parseFallbackInput(input: String): ServerProfile {
-        if (input.startsWith("ghostwire://") || input.startsWith("vless://")) {
-            val stripped = input.substringAfter("://")
-            val parts = stripped.split("@", ":", "?", "#")
-            val host = if (parts.size > 1) parts[1] else "127.0.0.1"
-            return ServerProfile(
-                id = "custom_${System.currentTimeMillis()}",
-                name = "Imported SlipNet Reality",
-                protocol = "WireReality",
+    /**
+     * Imports standard WireGuard .conf file
+     */
+    fun importWireguardConfig(confText: String, profileName: String): Result<ServerProfile> {
+        try {
+            var privateKey = ""
+            var address = ""
+            var dns = ""
+            var mtu = 1420
+            var publicKey = ""
+            var endpoint = ""
+
+            val lines = confText.lines()
+            var currentSection = ""
+            for (line in lines) {
+                val clean = line.trim()
+                if (clean.startsWith("#") || clean.isEmpty()) continue
+                if (clean.startsWith("[") && clean.endsWith("]")) {
+                    currentSection = clean.uppercase()
+                    continue
+                }
+                val parts = clean.split("=", limit = 2)
+                if (parts.size != 2) continue
+                val key = parts[0].trim().lowercase()
+                val value = parts[1].trim()
+
+                when (currentSection) {
+                    "[INTERFACE]" -> {
+                        when (key) {
+                            "privatekey" -> privateKey = value
+                            "address" -> address = value
+                            "dns" -> dns = value
+                            "mtu" -> mtu = value.toIntOrNull() ?: 1420
+                        }
+                    }
+                    "[PEER]" -> {
+                        when (key) {
+                            "publickey" -> publicKey = value
+                            "endpoint" -> endpoint = value
+                        }
+                    }
+                }
+            }
+
+            val hostPort = endpoint.split(":")
+            val host = hostPort.getOrElse(0) { "127.0.0.1" }
+            val port = hostPort.getOrNull(1)?.toIntOrNull() ?: 51820
+
+            val profile = ServerProfile(
+                id = "wg_${System.currentTimeMillis()}",
+                name = profileName.takeIf { it.isNotBlank() } ?: "WireGuard Secure",
+                protocol = "WireGuard",
                 serverAddress = host,
-                serverPort = 443,
-                isBuiltin = false,
-                pingMs = -1
-            )
-        } else if (input.startsWith("dnstt://")) {
-            val uri = Uri.parse(input)
-            val domain = uri.host ?: ""
-            val serverIp = uri.getQueryParameter("server") ?: domain
-            val port = if (uri.port > 0) uri.port else 53
-            return ServerProfile(
-                id = "custom_${System.currentTimeMillis()}",
-                name = "Imported SlipNet DNS",
-                protocol = "GhostDNS Core",
-                serverAddress = serverIp,
                 serverPort = port,
-                tunnelDomain = domain,
+                uuid = privateKey,
+                publicKey = publicKey,
+                resolverIp = dns.takeIf { it.isNotEmpty() },
+                mtu = mtu,
+                customConfig = confText,
                 isBuiltin = false,
                 pingMs = -1
             )
-        } else {
-            val json = JSONObject(input)
-            return ServerProfile.fromJson(json)
+            addProfile(profile)
+            return Result.success(profile)
+        } catch (e: Exception) {
+            return Result.failure(e)
         }
     }
 
-    private fun addProfile(profile: ServerProfile) {
-        val current = _profiles.value.toMutableList()
-        current.add(profile)
-        _profiles.value = current
-        saveCustomProfiles()
+    private fun parseGhostwireUri(uriStr: String): ServerProfile {
+        val uri = Uri.parse(uriStr)
+        val userInfo = uri.userInfo ?: ""
+        val host = uri.host ?: "127.0.0.1"
+        val port = if (uri.port > 0) uri.port else 443
+        val realityPk = uri.getQueryParameter("reality_pk")
+        val realitySid = uri.getQueryParameter("reality_sid")
+        val sni = uri.getQueryParameter("sni") ?: "gateway.icloud.com"
+        val dnsttPk = uri.getQueryParameter("dnstt_pk")
+        val dnsttDomain = uri.getQueryParameter("dnstt_domain")
+        val name = uri.fragment?.takeIf { it.isNotEmpty() } ?: "GhostWire Universal Node"
+
+        return ServerProfile(
+            id = "gw_${System.currentTimeMillis()}",
+            name = name,
+            protocol = "WireReality",
+            serverAddress = host,
+            serverPort = port,
+            uuid = userInfo,
+            publicKey = realityPk ?: dnsttPk,
+            shortId = realitySid,
+            sni = sni,
+            tunnelDomain = dnsttDomain,
+            mtu = 1400,
+            isBuiltin = false
+        )
     }
 
-    fun removeCustomProfile(profileId: String) {
-        val filtered = _profiles.value.filter { it.id != profileId || it.isBuiltin }
-        _profiles.value = filtered
-        saveCustomProfiles()
+    private fun parseVlessUri(uriStr: String): ServerProfile {
+        val uri = Uri.parse(uriStr)
+        val uuid = uri.userInfo ?: ""
+        val host = uri.host ?: "127.0.0.1"
+        val port = if (uri.port > 0) uri.port else 443
+        val pbk = uri.getQueryParameter("pbk")
+        val sid = uri.getQueryParameter("sid")
+        val sni = uri.getQueryParameter("sni")
+        val name = uri.fragment?.takeIf { it.isNotEmpty() } ?: "VLESS Reality Node"
+
+        return ServerProfile(
+            id = "vless_${System.currentTimeMillis()}",
+            name = name,
+            protocol = "WireReality",
+            serverAddress = host,
+            serverPort = port,
+            uuid = uuid,
+            publicKey = pbk,
+            shortId = sid,
+            sni = sni,
+            mtu = 1400,
+            isBuiltin = false
+        )
     }
 
-    /**
-     * Concurrently measures real latency across all servers without main thread blocking.
-     */
+    private fun parseVmessUri(uriStr: String): ServerProfile {
+        val b64 = uriStr.removePrefix("vmess://").trim()
+        val decoded = String(Base64.decode(b64, Base64.DEFAULT), StandardCharsets.UTF_8)
+        val json = JSONObject(decoded)
+        val host = json.optString("add", "127.0.0.1")
+        val port = json.optInt("port", 443)
+        val id = json.optString("id", "")
+        val sni = json.optString("sni", json.optString("host", ""))
+        val ps = json.optString("ps", "VMess Node")
+
+        return ServerProfile(
+            id = "vmess_${System.currentTimeMillis()}",
+            name = ps,
+            protocol = "VMess",
+            serverAddress = host,
+            serverPort = port,
+            uuid = id,
+            sni = sni.takeIf { it.isNotEmpty() },
+            mtu = 1400,
+            isBuiltin = false
+        )
+    }
+
+    private fun parseTrojanUri(uriStr: String): ServerProfile {
+        val uri = Uri.parse(uriStr)
+        val password = uri.userInfo ?: ""
+        val host = uri.host ?: "127.0.0.1"
+        val port = if (uri.port > 0) uri.port else 443
+        val sni = uri.getQueryParameter("sni") ?: host
+        val name = uri.fragment?.takeIf { it.isNotEmpty() } ?: "Trojan Node"
+
+        return ServerProfile(
+            id = "trojan_${System.currentTimeMillis()}",
+            name = name,
+            protocol = "Trojan",
+            serverAddress = host,
+            serverPort = port,
+            uuid = password,
+            sni = sni,
+            mtu = 1400,
+            isBuiltin = false
+        )
+    }
+
+    private fun parseShadowsocksUri(uriStr: String): ServerProfile {
+        val uri = Uri.parse(uriStr)
+        val host = uri.host ?: "127.0.0.1"
+        val port = if (uri.port > 0) uri.port else 8388
+        val name = uri.fragment?.takeIf { it.isNotEmpty() } ?: "Shadowsocks Node"
+
+        return ServerProfile(
+            id = "ss_${System.currentTimeMillis()}",
+            name = name,
+            protocol = "Shadowsocks",
+            serverAddress = host,
+            serverPort = port,
+            uuid = uri.userInfo,
+            mtu = 1400,
+            isBuiltin = false
+        )
+    }
+
+    private fun parseDnsttUri(uriStr: String): ServerProfile {
+        val uri = Uri.parse(uriStr)
+        val pubkey = uri.userInfo ?: ""
+        val domain = uri.host ?: "t.nteam.bond"
+        val server = uri.getQueryParameter("server") ?: "18.222.138.62"
+        val port = if (uri.port > 0) uri.port else 53
+        val name = uri.fragment?.takeIf { it.isNotEmpty() } ?: "GhostDNS Core"
+
+        return ServerProfile(
+            id = "dnstt_${System.currentTimeMillis()}",
+            name = name,
+            protocol = "GhostDNS Core",
+            serverAddress = server,
+            serverPort = port,
+            publicKey = pubkey,
+            tunnelDomain = domain,
+            resolverIp = "10.201.34.14",
+            mtu = 1232,
+            isBuiltin = false
+        )
+    }
+
     suspend fun testAllLatencies() = withContext(Dispatchers.IO) {
         _isTestingLatencies.value = true
         try {
             val currentList = _profiles.value
-            val array = JSONArray()
-            for (p in currentList) {
-                array.put(p.toJson())
+            val updated = currentList.map { profile ->
+                val latency = measureTcpLatency(profile.serverAddress, profile.serverPort)
+                profile.copy(pingMs = latency)
             }
-
-            if (NativeBridge.isLoaded()) {
-                val resultJson = NativeBridge.measureAllProfiles(array.toString())
-                val resultArray = JSONArray(resultJson)
-                val updatedList = mutableListOf<ServerProfile>()
-                for (i in 0 until resultArray.length()) {
-                    updatedList.add(ServerProfile.fromJson(resultArray.getJSONObject(i)))
-                }
-                _profiles.value = updatedList
-            } else {
-                // Fallback simulation with realistic latency
-                val simulated = currentList.map { profile ->
-                    val latency = when (profile.protocol) {
-                        "WireReality" -> (35..65).random()
-                        "GhostDNS Core" -> (40..75).random()
-                        else -> (45..80).random()
-                    }
-                    profile.copy(pingMs = latency)
-                }.sortedBy { it.pingMs }
-                _profiles.value = simulated
-            }
+            _profiles.value = updated
         } finally {
             _isTestingLatencies.value = false
+        }
+    }
+
+    private fun measureTcpLatency(host: String, port: Int): Int {
+        if (host.isBlank()) return -1
+        return try {
+            val start = System.currentTimeMillis()
+            Socket().use { socket ->
+                socket.connect(InetSocketAddress(host, port), 2500)
+            }
+            (System.currentTimeMillis() - start).toInt().coerceAtLeast(1)
+        } catch (e: Exception) {
+            -1
         }
     }
 }

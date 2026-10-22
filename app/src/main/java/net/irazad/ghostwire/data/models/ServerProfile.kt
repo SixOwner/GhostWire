@@ -5,7 +5,7 @@ import org.json.JSONObject
 data class ServerProfile(
     val id: String,
     val name: String,
-    val protocol: String, // WireReality, GhostDNS Core, GhostStream, GhostShade, etc.
+    val protocol: String, // WireReality, GhostDNS Core, WireGuard, VMess, Trojan, Shadowsocks
     val serverAddress: String,
     val serverPort: Int,
     val uuid: String? = null,
@@ -17,7 +17,8 @@ data class ServerProfile(
     val mtu: Int = 1400,
     val noiseInjection: Boolean = true,
     val isBuiltin: Boolean = false,
-    val pingMs: Int = -1
+    val pingMs: Int = -1,
+    val customConfig: String? = null
 ) {
     fun toJson(): JSONObject {
         return JSONObject().apply {
@@ -36,6 +37,7 @@ data class ServerProfile(
             put("noise_injection", noiseInjection)
             put("is_builtin", isBuiltin)
             put("ping_ms", pingMs)
+            putOpt("custom_config", customConfig)
         }
     }
 
@@ -56,7 +58,8 @@ data class ServerProfile(
                 mtu = json.optInt("mtu", 1400),
                 noiseInjection = json.optBoolean("noise_injection", true),
                 isBuiltin = json.optBoolean("is_builtin", false),
-                pingMs = json.optInt("ping_ms", -1)
+                pingMs = json.optInt("ping_ms", -1),
+                customConfig = json.optString("custom_config").takeIf { it.isNotEmpty() }
             )
         }
     }

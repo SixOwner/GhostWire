@@ -2,7 +2,6 @@ package net.irazad.ghostwire.ui.screens
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,7 +26,7 @@ import net.irazad.ghostwire.data.models.UserPreferences
 import net.irazad.ghostwire.ui.components.GlassCard
 import net.irazad.ghostwire.ui.components.TacticalStatusBadge
 import net.irazad.ghostwire.ui.theme.ElectricCyan
-import net.irazad.ghostwire.ui.theme.DeepViolet
+import net.irazad.ghostwire.ui.theme.SoftIndigo
 import net.irazad.ghostwire.ui.theme.StatusGreen
 
 @Composable
@@ -36,7 +35,7 @@ fun EngineScreen(
     onLanguageChange: (AppLanguage) -> Unit,
     onThemeChange: (AppTheme) -> Unit,
     onAutoMtuToggle: (Boolean) -> Unit,
-    onManualMtuChange: (Int) -> Unit,
+    onManualMtuChange: (Int) -> Unit = {},
     onDesyncToggle: (Boolean) -> Unit,
     onResolverHoppingToggle: (Boolean) -> Unit,
     onSurvivalModeToggle: (Boolean) -> Unit,
@@ -52,8 +51,8 @@ fun EngineScreen(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .padding(horizontal = 20.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         // Header
         Column {
@@ -79,7 +78,7 @@ fun EngineScreen(
         )
 
         GlassCard(modifier = Modifier.fillMaxWidth()) {
-            Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 // Language Switcher
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -94,17 +93,17 @@ fun EngineScreen(
                         )
                     }
 
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         Button(
                             onClick = { onLanguageChange(AppLanguage.FA) },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = if (userPreferences.language == AppLanguage.FA) ElectricCyan else MaterialTheme.colorScheme.surfaceVariant,
                                 contentColor = if (userPreferences.language == AppLanguage.FA) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant
                             ),
-                            shape = RoundedCornerShape(10.dp),
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                            shape = RoundedCornerShape(8.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                         ) {
-                            Text(text = "فارسی", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Text(text = "فارسی", fontSize = 11.5.sp, fontWeight = FontWeight.Bold)
                         }
 
                         Button(
@@ -113,15 +112,15 @@ fun EngineScreen(
                                 containerColor = if (userPreferences.language == AppLanguage.EN) ElectricCyan else MaterialTheme.colorScheme.surfaceVariant,
                                 contentColor = if (userPreferences.language == AppLanguage.EN) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant
                             ),
-                            shape = RoundedCornerShape(10.dp),
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                            shape = RoundedCornerShape(8.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                         ) {
-                            Text(text = "English", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Text(text = "English", fontSize = 11.5.sp, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
 
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
 
                 // Theme Switcher
                 Row(
@@ -137,15 +136,15 @@ fun EngineScreen(
                         )
                     }
 
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         Button(
                             onClick = { onThemeChange(AppTheme.DARK_SHIELD) },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (userPreferences.theme == AppTheme.DARK_SHIELD) DeepViolet else MaterialTheme.colorScheme.surfaceVariant,
+                                containerColor = if (userPreferences.theme == AppTheme.DARK_SHIELD) SoftIndigo else MaterialTheme.colorScheme.surfaceVariant,
                                 contentColor = Color.White
                             ),
-                            shape = RoundedCornerShape(10.dp),
-                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+                            shape = RoundedCornerShape(8.dp),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
                         ) {
                             Text(text = "Dark Shield", fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         }
@@ -156,8 +155,8 @@ fun EngineScreen(
                                 containerColor = if (userPreferences.theme == AppTheme.LIGHT_CYBER) ElectricCyan else MaterialTheme.colorScheme.surfaceVariant,
                                 contentColor = if (userPreferences.theme == AppTheme.LIGHT_CYBER) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant
                             ),
-                            shape = RoundedCornerShape(10.dp),
-                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+                            shape = RoundedCornerShape(8.dp),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
                         ) {
                             Text(text = "Light Cyber", fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         }
@@ -175,14 +174,14 @@ fun EngineScreen(
         )
 
         GlassCard(modifier = Modifier.fillMaxWidth()) {
-            Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 // Auto MTU (PMTUD)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
                         Text(
                             text = stringResource(R.string.engine_auto_mtu),
                             style = MaterialTheme.typography.bodyLarge,
@@ -191,17 +190,14 @@ fun EngineScreen(
                         Text(
                             text = stringResource(R.string.engine_auto_mtu_desc),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 11.sp
                         )
                     }
-                    Switch(
-                        checked = userPreferences.autoMtu,
-                        onCheckedChange = onAutoMtuToggle,
-                        colors = SwitchDefaults.colors(checkedThumbColor = ElectricCyan)
-                    )
+                    TacticalSwitch(checked = userPreferences.autoMtu, onCheckedChange = onAutoMtuToggle)
                 }
 
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
 
                 // TLS ClientHello Fragmentation (Desync)
                 Row(
@@ -209,7 +205,7 @@ fun EngineScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
                         Text(
                             text = stringResource(R.string.engine_desync),
                             style = MaterialTheme.typography.bodyLarge,
@@ -218,17 +214,14 @@ fun EngineScreen(
                         Text(
                             text = stringResource(R.string.engine_desync_desc),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 11.sp
                         )
                     }
-                    Switch(
-                        checked = userPreferences.desyncEnabled,
-                        onCheckedChange = onDesyncToggle,
-                        colors = SwitchDefaults.colors(checkedThumbColor = ElectricCyan)
-                    )
+                    TacticalSwitch(checked = userPreferences.desyncEnabled, onCheckedChange = onDesyncToggle)
                 }
 
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
 
                 // Dynamic Resolver Hopping
                 Row(
@@ -236,7 +229,7 @@ fun EngineScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
                         Text(
                             text = stringResource(R.string.engine_resolver_hopping),
                             style = MaterialTheme.typography.bodyLarge,
@@ -245,14 +238,11 @@ fun EngineScreen(
                         Text(
                             text = stringResource(R.string.engine_resolver_hopping_desc),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 11.sp
                         )
                     }
-                    Switch(
-                        checked = userPreferences.resolverHopping,
-                        onCheckedChange = onResolverHoppingToggle,
-                        colors = SwitchDefaults.colors(checkedThumbColor = ElectricCyan)
-                    )
+                    TacticalSwitch(checked = userPreferences.resolverHopping, onCheckedChange = onResolverHoppingToggle)
                 }
             }
         }
@@ -262,11 +252,11 @@ fun EngineScreen(
             text = stringResource(R.string.engine_survival),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = DeepViolet
+            color = SoftIndigo
         )
 
         GlassCard(modifier = Modifier.fillMaxWidth()) {
-            Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 // Per-App Routing (Split Tunneling)
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Row(
@@ -274,7 +264,7 @@ fun EngineScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column(modifier = Modifier.weight(1f)) {
+                        Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
                             Text(
                                 text = stringResource(R.string.engine_per_app_routing),
                                 style = MaterialTheme.typography.bodyLarge,
@@ -283,37 +273,35 @@ fun EngineScreen(
                             Text(
                                 text = stringResource(R.string.engine_per_app_desc),
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 11.sp
                             )
                         }
-                        Switch(
-                            checked = userPreferences.survivalMode,
-                            onCheckedChange = onSurvivalModeToggle,
-                            colors = SwitchDefaults.colors(checkedThumbColor = DeepViolet)
-                        )
+                        TacticalSwitch(checked = userPreferences.survivalMode, onCheckedChange = onSurvivalModeToggle)
                     }
 
                     OutlinedButton(
                         onClick = onConfigureAppRouting,
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(10.dp),
+                        shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = ElectricCyan)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = null,
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(14.dp)
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = stringResource(R.string.engine_configure_routing),
                             style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 12.sp
                         )
                     }
                 }
 
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
 
                 // Background Data Stripper
                 Row(
@@ -321,7 +309,7 @@ fun EngineScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
                         Text(
                             text = stringResource(R.string.engine_bg_stripper),
                             style = MaterialTheme.typography.bodyLarge,
@@ -330,17 +318,14 @@ fun EngineScreen(
                         Text(
                             text = stringResource(R.string.engine_bg_stripper_desc),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 11.sp
                         )
                     }
-                    Switch(
-                        checked = userPreferences.backgroundStripper,
-                        onCheckedChange = onBackgroundStripperToggle,
-                        colors = SwitchDefaults.colors(checkedThumbColor = DeepViolet)
-                    )
+                    TacticalSwitch(checked = userPreferences.backgroundStripper, onCheckedChange = onBackgroundStripperToggle)
                 }
 
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
 
                 // Zstd Stream Compression
                 Row(
@@ -348,7 +333,7 @@ fun EngineScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
                         Text(
                             text = stringResource(R.string.engine_stream_compression),
                             style = MaterialTheme.typography.bodyLarge,
@@ -357,19 +342,16 @@ fun EngineScreen(
                         Text(
                             text = stringResource(R.string.engine_stream_compression_desc),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 11.sp
                         )
                     }
-                    Switch(
-                        checked = userPreferences.zstdCompression,
-                        onCheckedChange = onZstdToggle,
-                        colors = SwitchDefaults.colors(checkedThumbColor = DeepViolet)
-                    )
+                    TacticalSwitch(checked = userPreferences.zstdCompression, onCheckedChange = onZstdToggle)
                 }
             }
         }
 
-        // Section: Exclusive Developer & Community Hub (Engine -> About)
+        // Section: Exclusive Developer & Community Hub
         Text(
             text = stringResource(R.string.about_title),
             style = MaterialTheme.typography.titleMedium,
@@ -378,14 +360,14 @@ fun EngineScreen(
         )
 
         GlassCard(modifier = Modifier.fillMaxWidth()) {
-            Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                // Developer Card: "Developed by SixOwner" with verified badge
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                // Developer Card: "Developed by SixOwner"
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = stringResource(R.string.about_developer_title),
                             style = MaterialTheme.typography.labelSmall,
@@ -404,7 +386,7 @@ fun EngineScreen(
                                 painter = painterResource(id = R.drawable.ic_verified_badge),
                                 contentDescription = "Verified Architect",
                                 tint = ElectricCyan,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(16.dp)
                             )
                         }
                     }
@@ -415,9 +397,9 @@ fun EngineScreen(
                     )
                 }
 
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
 
-                // Community Channel: "ایران آزاد" with link to https://t.me/irazadnet
+                // Community Channel: IranAzad
                 Column {
                     Text(
                         text = stringResource(R.string.about_community_title),
@@ -428,9 +410,10 @@ fun EngineScreen(
                     Text(
                         text = stringResource(R.string.about_community_desc),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontSize = 11.5.sp
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     Button(
                         onClick = {
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/irazadnet"))
@@ -440,27 +423,27 @@ fun EngineScreen(
                             containerColor = ElectricCyan,
                             contentColor = Color.Black
                         ),
-                        shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_telegram),
                             contentDescription = null,
-                            modifier = Modifier.size(18.dp),
+                            modifier = Modifier.size(16.dp),
                             tint = Color.Black
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = stringResource(R.string.about_community_button),
+                            text = "Join IranAzad",
                             fontWeight = FontWeight.Bold,
                             fontSize = 13.sp
                         )
                     }
                 }
 
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
 
-                // Build Integrity Verification Card
+                // Release Status
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -472,30 +455,43 @@ fun EngineScreen(
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = stringResource(R.string.build_integrity_verified),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.SemiBold,
-                            color = StatusGreen
+                            color = StatusGreen,
+                            fontSize = 11.sp
                         )
                     }
-
                     TacticalStatusBadge(
-                        title = "2027.10 PROD",
+                        title = "v2.5.0 PROD",
                         accentColor = StatusGreen
                     )
                 }
-
-                Text(
-                    text = stringResource(R.string.about_disclaimer),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontSize = 11.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                )
             }
         }
 
-        Spacer(modifier = Modifier.height(100.dp)) // Floating bar spacer
+        Spacer(modifier = Modifier.height(80.dp))
     }
+}
+
+@Composable
+private fun TacticalSwitch(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Switch(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        modifier = modifier,
+        colors = SwitchDefaults.colors(
+            checkedThumbColor = Color.White,
+            checkedTrackColor = ElectricCyan,
+            checkedBorderColor = Color.Transparent,
+            uncheckedThumbColor = Color(0xFF94A3B8),
+            uncheckedTrackColor = Color(0xFF1E293B),
+            uncheckedBorderColor = Color(0xFF334155)
+        )
+    )
 }

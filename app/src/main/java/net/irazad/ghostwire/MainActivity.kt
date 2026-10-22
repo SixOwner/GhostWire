@@ -17,11 +17,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import net.irazad.ghostwire.data.models.AppLanguage
+import net.irazad.ghostwire.data.models.ServerProfile
 import net.irazad.ghostwire.data.models.VpnStatus
 import net.irazad.ghostwire.data.repository.RadarRepository
 import net.irazad.ghostwire.data.repository.ServerProfileRepository
@@ -49,6 +52,27 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private val wireguardPickerLauncher = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            try {
+                val content = contentResolver.openInputStream(uri)?.use { it.bufferedReader().readText() }
+                if (!content.isNullOrBlank()) {
+                    val fileName = uri.lastPathSegment?.substringAfterLast('/')?.removeSuffix(".conf") ?: "WireGuard Node"
+                    val result = profileRepo.importWireguardConfig(content, fileName)
+                    if (result.isSuccess) {
+                        Toast.makeText(this@MainActivity, getString(R.string.import_success), Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this@MainActivity, getString(R.string.import_error), Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this, "Failed to read file: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,20 +88,36 @@ class MainActivity : ComponentActivity() {
             val isTestingLatencies by profileRepo.isTestingLatencies.collectAsState()
             val resolvers by radarRepo.resolvers.collectAsState()
             val isScanningRadar by radarRepo.isScanning.collectAsState()
+            val scanProgress by radarRepo.scanProgress.collectAsState()
+            val scanStage by radarRepo.scanStage.collectAsState()
             val activeFilter by radarRepo.activeFilter.collectAsState()
             val telemetry by GhostWireVpnController.telemetry.collectAsState()
 
             var selectedTab by remember { mutableStateOf(NavigationTab.NEXUS) }
             var isAppRoutingOpen by remember { mutableStateOf(false) }
 
-            // Dynamic Layout Directionality Engine (LTR for English, RTL for Persian)
-            val layoutDirection = if (userPrefs.language == AppLanguage.FA) {
-                LayoutDirection.Rtl
-            } else {
-                LayoutDirection.Ltr
+            // Dynamic Runtime Language and Directionality Engine
+            val locale = if (userPrefs.language == AppLanguage.FA) Locale("fa") else Locale("en")
+            val baseContext = LocalContext.current
+            val localizedContext = remember(userPrefs.language) {
+                val conf = Configuration(baseContext.resources.configuration)
+                conf.setLocale(locale)
+                conf.setLayoutDirection(locale)
+                baseContext.createConfigurationContext(conf)
             }
+            val localizedConfig = remember(userPrefs.language) {
+                Configuration(baseContext.resources.configuration).apply {
+                    setLocale(locale)
+                    setLayoutDirection(locale)
+                }
+            }
+            val layoutDirection = if (userPrefs.language == AppLanguage.FA) LayoutDirection.Rtl else LayoutDirection.Ltr
 
-            CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+            CompositionLocalProvider(
+                LocalContext provides localizedContext,
+                LocalConfiguration provides localizedConfig,
+                LocalLayoutDirection provides layoutDirection
+            ) {
                 GhostWireTheme(selectedTheme = userPrefs.theme) {
                     if (isAppRoutingOpen) {
                         AppRoutingScreen(
@@ -120,11 +160,33 @@ class MainActivity : ComponentActivity() {
                                         RadarScreen(
                                             resolvers = resolvers,
                                             isScanning = isScanningRadar,
+                                            scanProgress = scanProgress,
+                                            scanStage = scanStage,
                                             activeFilter = activeFilter,
+                                            activeProfile = activeProfile,
                                             onFilterChange = { radarRepo.setFilter(it) },
                                             onScanClick = {
                                                 lifecycleScope.launch {
                                                     radarRepo.scanAllResolvers()
+                                                }
+                                            },
+                                            onApplyNodeToProfile = { node ->
+                                                if (activeProfile != null) {
+                                                    if (node.targetType == "CLEAN_IP") {
+                                                        profileRepo.applyIpOrDnsToProfile(activeProfile.id, node.ip, null)
+                                                    } else {
+                                                        profileRepo.applyIpOrDnsToProfile(activeProfile.id, null, node.ip)
+                                                    }
+                                                }
+                                            },
+                                            onAutoApplyBestNode = {
+                                                val best = resolvers.filter { it.isHealthy && it.rttMs > 0 }.minByOrNull { it.rttMs }
+                                                if (best != null && activeProfile != null) {
+                                                    if (best.targetType == "CLEAN_IP") {
+                                                        profileRepo.applyIpOrDnsToProfile(activeProfile.id, best.ip, null)
+                                                    } else {
+                                                        profileRepo.applyIpOrDnsToProfile(activeProfile.id, null, best.ip)
+                                                    }
                                                 }
                                             }
                                         )
@@ -143,9 +205,15 @@ class MainActivity : ComponentActivity() {
                                             onImportProfile = { uri ->
                                                 profileRepo.importProfile(uri)
                                             },
+                                            onImportWireguardClick = {
+                                                wireguardPickerLauncher.launch(arrayOf("*/*"))
+                                            },
                                             onRestoreFactoryDefaults = {
                                                 profileRepo.restoreFactoryDefaults()
                                                 Toast.makeText(this@MainActivity, "Factory defaults restored", Toast.LENGTH_SHORT).show()
+                                            },
+                                            onDeleteProfile = { profileId ->
+                                                profileRepo.deleteProfile(profileId)
                                             },
                                             onUpdateTransport = { pId, resIp, mtu, port, noise ->
                                                 profileRepo.updateTransportParameters(pId, resIp, mtu, port, noise)
@@ -157,7 +225,6 @@ class MainActivity : ComponentActivity() {
                                             userPreferences = userPrefs,
                                             onLanguageChange = { newLang ->
                                                 userPrefsRepo.updateLanguage(newLang)
-                                                updateAppLocale(newLang)
                                             },
                                             onThemeChange = { userPrefsRepo.updateTheme(it) },
                                             onAutoMtuToggle = { userPrefsRepo.updateAutoMtu(it) },
@@ -198,17 +265,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun updateAppLocale(lang: AppLanguage) {
-        val locale = if (lang == AppLanguage.FA) Locale("fa") else Locale("en")
-        Locale.setDefault(locale)
-        val config = resources.configuration
-        config.setLocale(locale)
-        config.setLayoutDirection(locale)
-        createConfigurationContext(config)
-        recreate()
-    }
-
-    private fun toggleVpnConnection(profile: net.irazad.ghostwire.data.models.ServerProfile?) {
+    private fun toggleVpnConnection(profile: ServerProfile?) {
         val currentStatus = GhostWireVpnController.telemetry.value.status
         if (currentStatus == VpnStatus.CONNECTED || currentStatus == VpnStatus.CONNECTING) {
             GhostWireVpnController.disconnect(this)

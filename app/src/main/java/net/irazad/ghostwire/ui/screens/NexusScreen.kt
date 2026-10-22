@@ -84,7 +84,7 @@ fun NexusScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
+                Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
                     Text(
                         text = stringResource(R.string.selected_node_label),
                         style = MaterialTheme.typography.labelSmall,
