@@ -50,14 +50,18 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun attachBaseContext(newBase: Context) {
-        val repo = UserPreferencesRepository(newBase)
-        val lang = repo.userPreferences.value.language
-        val locale = if (lang == AppLanguage.FA) Locale("fa") else Locale("en")
-        Locale.setDefault(locale)
-        val config = Configuration(newBase.resources.configuration)
-        config.setLocale(locale)
-        config.setLayoutDirection(locale)
-        super.attachBaseContext(newBase.createConfigurationContext(config))
+        try {
+            val repo = UserPreferencesRepository(newBase)
+            val lang = repo.userPreferences.value.language
+            val locale = if (lang == AppLanguage.FA) Locale("fa") else Locale("en")
+            Locale.setDefault(locale)
+            val config = Configuration(newBase.resources.configuration)
+            config.setLocale(locale)
+            config.setLayoutDirection(locale)
+            super.attachBaseContext(newBase.createConfigurationContext(config))
+        } catch (e: Exception) {
+            super.attachBaseContext(newBase)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
