@@ -11,8 +11,8 @@ object NativeBridge {
         try {
             System.loadLibrary("ghostwire_core")
             isNativeLoaded = true
-        } catch (e: UnsatisfiedLinkError) {
-            Log.w(TAG, "Native library libghostwire_core.so not yet linked. Using resilient runtime fallback engine.")
+        } catch (t: Throwable) {
+            Log.w(TAG, "Native library libghostwire_core.so not yet linked: ${t.message}. Using resilient runtime fallback engine.")
             isNativeLoaded = false
         }
     }

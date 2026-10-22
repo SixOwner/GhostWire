@@ -7,6 +7,14 @@ import net.irazad.ghostwire.vpn.NativeBridge
 class GhostWireApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        
+        // Guard against uncaught crashes in background threads
+        val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            Log.e("GhostWireApp", "Uncaught crash on thread ${thread.name}: ${throwable.message}", throwable)
+            defaultHandler?.uncaughtException(thread, throwable)
+        }
+
         try {
             if (NativeBridge.isLoaded()) {
                 NativeBridge.initNativeCore(this)

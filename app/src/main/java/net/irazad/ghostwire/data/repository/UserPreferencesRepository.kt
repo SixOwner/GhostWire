@@ -25,8 +25,8 @@ class UserPreferencesRepository(context: Context) {
         val splitApps = prefs.getStringSet("split_tunnel_apps", emptySet()) ?: emptySet()
 
         return UserPreferences(
-            language = AppLanguage.valueOf(langStr),
-            theme = AppTheme.valueOf(themeStr),
+            language = runCatching { AppLanguage.valueOf(langStr) }.getOrDefault(AppLanguage.FA),
+            theme = runCatching { AppTheme.valueOf(themeStr) }.getOrDefault(AppTheme.DARK_SHIELD),
             autoMtu = prefs.getBoolean("auto_mtu", true),
             manualMtu = prefs.getInt("manual_mtu", 1400),
             desyncEnabled = prefs.getBoolean("desync_enabled", true),
